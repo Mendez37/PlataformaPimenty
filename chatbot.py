@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO INICIAL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Paloma Premium",
+    page_title="Bárbara Farias Premium",
     page_icon="💋",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -1681,3 +1681,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
