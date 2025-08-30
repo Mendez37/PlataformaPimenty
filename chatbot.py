@@ -18,14 +18,21 @@ from functools import lru_cache
 # CONFIGURAÇÃO INICIAL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Paloma Premium",
+    page_title="Bárbara Premium",
     page_icon="💋",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st._config.set_option('client.caching', True)
-st._config.set_option('client.showErrorDetails', False)
+# Configurações de caching (forma correta no Streamlit)
+@st.cache_resource
+def get_db_connection():
+    return DatabaseService.init_db()
+
+@st.cache_data(ttl=300)
+def cached_api_call(prompt, session_id):
+    # Esta função será implementada adequadamente
+    pass
 
 hide_streamlit_style = """
 <style>
@@ -113,51 +120,87 @@ class PersistentState:
         return cls._instance
     
     def init_db(self):
-        self.conn = sqlite3.connect('persistent_state.db', check_same_thread=False)
-        self.create_tables()
+        try:
+            self.conn = sqlite3.connect('persistent_state.db', check_same_thread=False)
+            self.create_tables()
+            return self.conn
+        except Exception as e:
+            st.error(f"Erro ao conectar com o banco de dados: {e}")
+            return None
     
     def create_tables(self):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS global_state (
-                user_id TEXT PRIMARY KEY,
-                session_data TEXT NOT NULL,
-                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        self.conn.commit()
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS global_state (
+                    user_id TEXT PRIMARY KEY,
+                    session_data TEXT NOT NULL,
+                    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            self.conn.commit()
+        except Exception as e:
+            st.error(f"Erro ao criar tabelas: {e}")
 
     def save_state(self, user_id, data):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-            INSERT OR REPLACE INTO global_state (user_id, session_data)
-            VALUES (?, ?)
-        ''', (user_id, json.dumps(data)))
-        self.conn.commit()
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                INSERT OR REPLACE INTO global_state (user_id, session_data)
+                VALUES (?, ?)
+            ''', (user_id, json.dumps(data)))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            st.error(f"Erro ao salvar estado: {e}")
+            return False
     
     def load_state(self, user_id):
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT session_data FROM global_state WHERE user_id = ?', (user_id,))
-        result = cursor.fetchone()
-        return json.loads(result[0]) if result else None
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT session_data FROM global_state WHERE user_id = ?', (user_id,))
+            result = cursor.fetchone()
+            return json.loads(result[0]) if result else {}
+        except Exception as e:
+            st.error(f"Erro ao carregar estado: {e}")
+            return {}
 
 def get_user_id():
     if 'user_id' not in st.session_state:
-        user_id = st.query_params.get('uid', [None])[0]
+        # Tenta obter da query string
+        query_params = st.query_params
+        user_id = query_params.get("uid", None)
+        
         if not user_id:
             user_id = str(uuid.uuid4())
-            st.query_params['uid'] = user_id
+            st.query_params["uid"] = user_id
+            
         st.session_state.user_id = user_id
     return st.session_state.user_id
 
 def load_persistent_data():
     user_id = get_user_id()
     db = PersistentState()
-    saved_data = db.load_state(user_id) or {}
+    saved_data = db.load_state(user_id)
     
-    for key, value in saved_data.items():
+    # Definir valores padrão para todas as chaves necessárias
+    defaults = {
+        'age_verified': False,
+        'messages': [],
+        'request_count': 0,
+        'connection_complete': False,
+        'chat_started': False,
+        'audio_sent': False,
+        'current_page': 'home',
+        'show_vip_offer': False,
+        'session_id': str(random.randint(100000, 999999)),
+        'last_cta_time': 0
+    }
+    
+    # Atualizar session_state com dados salvos ou padrões
+    for key, default_value in defaults.items():
         if key not in st.session_state:
-            st.session_state[key] = value
+            st.session_state[key] = saved_data.get(key, default_value)
 
 def save_persistent_data():
     user_id = get_user_id()
@@ -167,21 +210,18 @@ def save_persistent_data():
         'age_verified', 'messages', 'request_count',
         'connection_complete', 'chat_started', 'audio_sent',
         'current_page', 'show_vip_offer', 'session_id',
-        'last_cta_time'  # Novo campo adicionado
+        'last_cta_time'
     ]
     
-    new_data = {key: st.session_state.get(key) for key in persistent_keys if key in st.session_state}
-    saved_data = db.load_state(user_id) or {}
-    
-    if new_data != saved_data:
-        db.save_state(user_id, new_data)
+    data_to_save = {key: st.session_state.get(key) for key in persistent_keys}
+    db.save_state(user_id, data_to_save)
 
 # ======================
 # MODELOS DE DADOS
 # ======================
 class Persona:
-    PALOMA = """
-    [PERFIL PALOMA]
+    BARBARA = """
+    [PERFIL BÁRBARA]
     - Mulher vulgar e safada que adora provocar
     - Linguagem direta e cheia de malícia
     - Frases curtas e sem pontuação perfeita
@@ -196,7 +236,7 @@ class Persona:
     1. Quando o histórico mostra clima sexual:
     Histórico:
     Cliente: sua buceta é rosinha?
-    Paloma: adoro mostrar ela aberta
+    Bárbara: adoro mostrar ela aberta
     Cliente: quero ver
     Resposta: ```json
     {
@@ -226,7 +266,7 @@ class Persona:
     3. Quando o contexto não justifica CTA:
     Histórico:
     Cliente: oi
-    Paloma: oi gato
+    Bárbara: oi gato
     Resposta: ```json
     {
       "text": "eai gostoso",
@@ -332,39 +372,49 @@ class CTAEngine:
 class DatabaseService:
     @staticmethod
     def init_db():
-        conn = sqlite3.connect('chat_history.db', check_same_thread=False)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS conversations
-                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     user_id TEXT,
-                     session_id TEXT,
-                     timestamp DATETIME,
-                     role TEXT,
-                     content TEXT)''')
-        conn.commit()
-        return conn
+        try:
+            conn = sqlite3.connect('chat_history.db', check_same_thread=False)
+            c = conn.cursor()
+            c.execute('''CREATE TABLE IF NOT EXISTS conversations
+                        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         user_id TEXT,
+                         session_id TEXT,
+                         timestamp DATETIME,
+                         role TEXT,
+                         content TEXT)''')
+            conn.commit()
+            return conn
+        except Exception as e:
+            st.error(f"Erro ao inicializar banco de dados: {e}")
+            return None
 
     @staticmethod
     def save_message(conn, user_id, session_id, role, content):
         try:
-            c = conn.cursor()
-            c.execute("""
-                INSERT INTO conversations (user_id, session_id, timestamp, role, content)
-                VALUES (?, ?, ?, ?, ?)
-            """, (user_id, session_id, datetime.now(), role, content))
-            conn.commit()
-        except sqlite3.Error as e:
+            if conn is not None:
+                c = conn.cursor()
+                c.execute("""
+                    INSERT INTO conversations (user_id, session_id, timestamp, role, content)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (user_id, session_id, datetime.now(), role, content))
+                conn.commit()
+        except Exception as e:
             st.error(f"Erro ao salvar mensagem: {e}")
 
     @staticmethod
     def load_messages(conn, user_id, session_id):
-        c = conn.cursor()
-        c.execute("""
-            SELECT role, content FROM conversations 
-            WHERE user_id = ? AND session_id = ?
-            ORDER BY timestamp
-        """, (user_id, session_id))
-        return [{"role": row[0], "content": row[1]} for row in c.fetchall()]
+        try:
+            if conn is not None:
+                c = conn.cursor()
+                c.execute("""
+                    SELECT role, content FROM conversations 
+                    WHERE user_id = ? AND session_id = ?
+                    ORDER BY timestamp
+                """, (user_id, session_id))
+                return [{"role": row[0], "content": row[1]} for row in c.fetchall()]
+        except Exception as e:
+            st.error(f"Erro ao carregar mensagens: {e}")
+        return []
 
 # ======================
 # SERVIÇOS DE API
@@ -394,7 +444,7 @@ class ApiService:
             "contents": [
                 {
                     "role": "user",
-                    "parts": [{"text": f"{Persona.PALOMA}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda em JSON com o formato:\n{{\n  \"text\": \"sua resposta\",\n  \"cta\": {{\n    \"show\": true/false,\n    \"label\": \"texto do botão\",\n    \"target\": \"página\"\n  }}\n}}"}]
+                    "parts": [{"text": f"{Persona.BARBARA}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda em JSON com o formato:\n{{\n  \"text\": \"sua resposta\",\n  \"cta\": {{\n    \"show\": true/false,\n    \"label\": \"texto do botão\",\n    \"target\": \"página\"\n  }}\n}}"}]
                 }
             ],
             "generationConfig": {
@@ -469,7 +519,7 @@ class UiService:
             animation: pulse-ring 2s infinite;
         ">
             <div style="font-size: 3rem;">📱</div>
-            <h3 style="color: #ff66b3; margin-bottom: 5px;">Ligando para Paloma...</h3>
+            <h3 style="color: #ff66b3; margin-bottom: 5px;">Ligando para Bárbara...</h3>
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;">
                 <div style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%;"></div>
                 <span style="font-size: 0.9rem;">Online agora</span>
@@ -499,7 +549,7 @@ class UiService:
         ">
             <div style="font-size: 3rem; color: #4CAF50;">✓</div>
             <h3 style="color: #4CAF50; margin-bottom: 5px;">Chamada atendida!</h3>
-            <p style="font-size: 0.9rem; margin:0;">Paloma está te esperando...</p>
+            <p style="font-size: 0.9rem; margin:0;">Bárbara está te esperando...</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -582,7 +632,7 @@ class UiService:
                 max-width: 600px;
                 margin: 2rem auto;
                 padding: 2rem;
-                background: linear-gradient(145deg, #1e0033, #3c0066);
+                background: linear-gradient(145deg, #ff0000, #cc0000);
                 border-radius: 15px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
                 border: 1px solid rgba(255, 102, 179, 0.2);
@@ -637,7 +687,7 @@ class UiService:
             st.markdown("""
             <style>
                 [data-testid="stSidebar"] {
-                    background: linear-gradient(180deg, #1e0033 0%, #3c0066 100%) !important;
+                    background: linear-gradient(180deg, #ff0000 0%, #cc0000 100%) !important;
                     border-right: 1px solid #ff66b3 !important;
                 }
                 .sidebar-logo-container {
@@ -707,8 +757,8 @@ class UiService:
             
             st.markdown("""
             <div class="sidebar-header">
-                <img src="{profile_img}" alt="Paloma">
-                <h3 style="color: #ff66b3; margin-top: 10px;">Paloma Premium</h3>
+                <img src="{profile_img}" alt="Bárbara">
+                <h3 style="color: #ff66b3; margin-top: 10px;">Bárbara Premium</h3>
             </div>
             """.format(profile_img=Config.IMG_PROFILE), unsafe_allow_html=True)
             
@@ -762,7 +812,7 @@ class UiService:
             st.markdown("---")
             st.markdown("""
             <div style="text-align: center; font-size: 0.7em; color: #888;">
-                <p>© 2024 Paloma Premium</p>
+                <p>© 2024 Bárbara Premium</p>
                 <p>Conteúdo para maiores de 18 anos</p>
             </div>
             """, unsafe_allow_html=True)
@@ -903,7 +953,7 @@ class UiService:
         
         st.markdown(f"""
         <div class="chat-header">
-            <h2 style="margin:0; font-size:1.5em; display:inline-block;">Chat Privado com Paloma</h2>
+            <h2 style="margin:0; font-size:1.5em; display:inline-block;">Chat Privado com Bárbara</h2>
         </div>
         """, unsafe_allow_html=True)
         
@@ -946,7 +996,7 @@ class NewPages:
         st.markdown("""
         <style>
             .hero-banner {
-                background: linear-gradient(135deg, #1e0033, #3c0066);
+                background: linear-gradient(135deg, #ff0000, #cc0000);
                 padding: 80px 20px;
                 text-align: center;
                 border-radius: 15px;
@@ -967,7 +1017,7 @@ class NewPages:
 
         st.markdown("""
         <div class="hero-banner">
-            <h1 style="color: #ff66b3;">Paloma Premium</h1>
+            <h1 style="color: #ff66b3;">Bárbara Premium</h1>
             <p>Conteúdo exclusivo que você não encontra em nenhum outro lugar...</p>
             <div style="margin-top: 20px;">
                 <a href="#vip" style="
@@ -1016,7 +1066,7 @@ class NewPages:
             }
             .package-box {
                 flex: 1;
-                background: rgba(30, 0, 51, 0.3);
+                background: rgba(255, 0, 0, 0.3);
                 border-radius: 15px;
                 padding: 20px;
                 border: 1px solid;
@@ -1092,7 +1142,7 @@ class NewPages:
                 border-radius: 15px;
                 padding: 20px;
                 margin-bottom: 20px;
-                background: rgba(30, 0, 51, 0.3);
+                background: rgba(255, 0, 0, 0.3);
             }
             .offer-highlight {
                 background: linear-gradient(45deg, #ff0066, #ff66b3);
@@ -1116,7 +1166,7 @@ class NewPages:
         <div class="package-box package-start">
             <div class="package-header">
                 <h3 style="color: #ff66b3;">START</h3>
-                <div class="package-price" style="color: #ff66b3;">R$ 49,90</div>
+                <div class="package-price" style="color: #ff66b3;">R$ 19,90</div>
                 <small>para iniciantes</small>
             </div>
             <ul class="package-benefits">
@@ -1151,7 +1201,7 @@ class NewPages:
             <div class="package-badge">POPULAR</div>
             <div class="package-header">
                 <h3 style="color: #9400d3;">PREMIUM</h3>
-                <div class="package-price" style="color: #9400d3;">R$ 99,90</div>
+                <div class="package-price" style="color: #9400d3;">R$ 29,90</div>
                 <small>experiência completa</small>
             </div>
             <ul class="package-benefits">
@@ -1187,7 +1237,7 @@ class NewPages:
         <div class="package-box package-extreme">
             <div class="package-header">
                 <h3 style="color: #ff0066;">EXTREME</h3>
-                <div class="package-price" style="color: #ff0066;">R$ 199,90</div>
+                <div class="package-price" style="color: #ff0066;">R$ 49,90</div>
                 <small>para verdadeiros fãs</small>
             </div>
             <ul class="package-benefits">
@@ -1351,7 +1401,7 @@ class ChatService:
             'audio_sent': False,
             'current_page': 'home',
             'show_vip_offer': False,
-            'last_cta_time': 0  # Novo campo adicionado
+            'last_cta_time': 0
         }
         
         for key, default in defaults.items():
@@ -1363,7 +1413,7 @@ class ChatService:
         formatted = []
         
         for msg in messages[-max_messages:]:
-            role = "Cliente" if msg["role"] == "user" else "Paloma"
+            role = "Cliente" if msg["role"] == "user" else "Bárbara"
             content = msg["content"]
             if content == "[ÁUDIO]":
                 content = "[Enviou um áudio sensual]"
@@ -1583,7 +1633,7 @@ def main():
     st.markdown("""
     <style>
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #1e0033 0%, #3c0066 100%) !important;
+            background: linear-gradient(180deg, #ff0000 0%, #cc0000 100%) !important;
             border-right: 1px solid #ff66b3 !important;
         }
         .stButton button {
@@ -1642,7 +1692,7 @@ def main():
             st.markdown("""
             <div style="text-align: center; margin: 50px 0;">
                 <img src="{profile_img}" width="120" style="border-radius: 50%; border: 3px solid #ff66b3;">
-                <h2 style="color: #ff66b3; margin-top: 15px;">Paloma</h2>
+                <h2 style="color: #ff66b3; margin-top: 15px;">Bárbara</h2>
                 <p style="font-size: 1.1em;">Estou pronta para você, amor...</p>
             </div>
             """.format(profile_img=Config.IMG_PROFILE), unsafe_allow_html=True)
@@ -1679,10 +1729,4 @@ def main():
     save_persistent_data()
 
 if __name__ == "__main__":
-
     main()
-
-
-
-
-
