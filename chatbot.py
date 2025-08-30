@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO INICIAL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Paloma Premium",
+    page_title="Paloma Premium 💋",
     page_icon="💋",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -79,7 +79,7 @@ class Config:
     VIP_LINK = "https://exemplo.com/vip"
     CHECKOUT_START = "https://pay.risepay.com.br/Pay/da708d2d3df749539c26024a8e99e6b6"
     CHECKOUT_PREMIUM = "https://pay.risepay.com.br/Pay/289ac101a3a84bc9a1fba3fc93ea4bf6"
-    CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/92a6851e479e49d49a9d2055034fe68f"
+    CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/da708d2d3df749539c26024a8e99e6b6"
     CHECKOUT_VIP_1MES = "https://checkout.exemplo.com/vip-1mes"
     CHECKOUT_VIP_3MESES = "https://checkout.exemplo.com/vip-3meses"
     CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano"
@@ -167,7 +167,7 @@ def save_persistent_data():
         'age_verified', 'messages', 'request_count',
         'connection_complete', 'chat_started', 'audio_sent',
         'current_page', 'show_vip_offer', 'session_id',
-        'last_cta_time'  # Novo campo adicionado
+        'last_cta_time'
     ]
     
     new_data = {key: st.session_state.get(key) for key in persistent_keys if key in st.session_state}
@@ -182,14 +182,14 @@ def save_persistent_data():
 class Persona:
     PALOMA = """
     [PERFIL PALOMA]
-    - Mulher vulgar e safada que adora provocar
-    - Linguagem direta e cheia de malícia
+    - Mulher vulgar e safada que adora provocar 🫦
+    - Linguagem direta e cheia de malícia 😈
     - Frases curtas e sem pontuação perfeita
-    - Adora falar putaria e deixar o cliente com tesão
+    - Adora falar putaria e deixar o cliente com tesão 🔥
 
     [DIRETRIZES DE RESPOSTA]
     1. Analise o histórico da conversa para entender o contexto
-    2. Só ofereça conteúdo quando o clima estiver quente
+    2. Só ofereça conteúdo quando o clima estiver quente 🔞
     3. Use CTAs inteligentes baseados no que o cliente está pedindo
 
     [EXEMPLOS CONTEXTUAIS]
@@ -200,10 +200,10 @@ class Persona:
     Cliente: quero ver
     Resposta: ```json
     {
-      "text": "to com fotos da minha buceta escorrendo quer ver?",
+      "text": "to com fotos da minha buceta escorrendo quer ver? 💦",
       "cta": {
         "show": true,
-        "label": "Ver Fotos Quentes",
+        "label": "📸 Ver Fotos Quentes",
         "target": "offers"
       }
     }
@@ -214,10 +214,10 @@ class Persona:
     Cliente: tem video vc transando?
     Resposta: ```json
     {
-      "text": "tenho varios videos bem gostosos vem ver",
+      "text": "tenho varios videos bem gostosos vem ver 🎥🔥",
       "cta": {
         "show": true,
-        "label": "Ver Vídeos Exclusivos",
+        "label": "🎬 Ver Vídeos Exclusivos",
         "target": "offers"
       }
     }
@@ -229,7 +229,7 @@ class Persona:
     Paloma: oi gato
     Resposta: ```json
     {
-      "text": "eai gostoso",
+      "text": "eai gostoso 😏",
       "cta": {
         "show": false
       }
@@ -244,10 +244,9 @@ class CTAEngine:
         if len(conversation_history) < 2:
             return False
 
-        # Não mostrar CTA se já teve um recentemente
         if 'last_cta_time' in st.session_state:
             elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 120:  # 2 minutos de intervalo entre CTAs
+            if elapsed < 120:
                 return False
 
         last_msgs = []
@@ -273,7 +272,7 @@ class CTAEngine:
         
         direct_asks = [
             "mostra", "quero ver", "me manda", "como assinar",
-            "como comprar", "como ter acesso", "onde vejo more"
+            "como comprar", "como ter acesso", "onde vejo mais"
         ]
         
         hot_count = sum(1 for word in hot_words if word in context)
@@ -289,13 +288,13 @@ class CTAEngine:
         if any(p in user_input for p in ["foto", "fotos", "buceta", "peito", "bunda"]):
             return {
                 "text": random.choice([
-                    "to com fotos da minha buceta bem aberta quer ver",
-                    "minha buceta ta chamando vc nas fotos",
-                    "fiz um ensaio novo mostrando tudinho"
+                    "to com fotos da minha buceta bem aberta quer ver? 📸💦",
+                    "minha buceta ta chamando vc nas fotos 😈🔥",
+                    "fiz um ensaio novo mostrando tudinho 🫦"
                 ]),
                 "cta": {
                     "show": True,
-                    "label": "Ver Fotos Quentes",
+                    "label": "📸 Ver Fotos Quentes",
                     "target": "offers"
                 }
             }
@@ -303,13 +302,13 @@ class CTAEngine:
         elif any(v in user_input for v in ["video", "transar", "masturbar"]):
             return {
                 "text": random.choice([
-                    "tenho video me masturbando gostoso vem ver",
-                    "to me tocando nesse video novo quer ver",
-                    "gravei um video especial pra vc"
+                    "tenho video me masturbando gostoso vem ver 🎥💦",
+                    "to me tocando nesse video novo quer ver? 🔥",
+                    "gravei um video especial pra vc 😈🎬"
                 ]),
                 "cta": {
                     "show": True,
-                    "label": "Ver Vídeos Exclusivos",
+                    "label": "🎬 Ver Vídeos Exclusivos",
                     "target": "offers"
                 }
             }
@@ -317,9 +316,9 @@ class CTAEngine:
         else:
             return {
                 "text": random.choice([
-                    "quero te mostrar tudo que eu tenho aqui",
-                    "meu privado ta cheio de surpresas pra vc",
-                    "vem ver o que eu fiz pensando em voce"
+                    "quero te mostrar tudo que eu tenho aqui 🎁🔥",
+                    "meu privado ta cheio de surpresas pra vc 😈",
+                    "vem ver o que eu fiz pensando em voce 💋"
                 ]),
                 "cta": {
                     "show": False
@@ -419,7 +418,7 @@ class ApiService:
                     if not CTAEngine.should_show_cta(st.session_state.messages):
                         resposta["cta"]["show"] = False
                     else:
-                        st.session_state.last_cta_time = time.time()  # Registrar quando CTA foi mostrado
+                        st.session_state.last_cta_time = time.time()
                 
                 return resposta
             
@@ -428,7 +427,7 @@ class ApiService:
                 
         except Exception as e:
             st.error(f"Erro na API: {str(e)}")
-            return {"text": "Vamos continuar isso mais tarde...", "cta": {"show": False}}
+            return {"text": "Vamos continuar isso mais tarde... 😘", "cta": {"show": False}}
 
 # ======================
 # SERVIÇOS DE INTERFACE
@@ -469,10 +468,10 @@ class UiService:
             animation: pulse-ring 2s infinite;
         ">
             <div style="font-size: 3rem;">📱</div>
-            <h3 style="color: #ff66b3; margin-bottom: 5px;">Ligando para Paloma...</h3>
+            <h3 style="color: #ff66b3; margin-bottom: 5px;">📞 Ligando para Paloma...</h3>
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;">
                 <div style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%;"></div>
-                <span style="font-size: 0.9rem;">Online agora</span>
+                <span style="font-size: 0.9rem;">🟢 Online agora</span>
             </div>
         </div>
         <style>
@@ -497,9 +496,9 @@ class UiService:
             text-align: center;
             color: white;
         ">
-            <div style="font-size: 3rem; color: #4CAF50;">✓</div>
-            <h3 style="color: #4CAF50; margin-bottom: 5px;">Chamada atendida!</h3>
-            <p style="font-size: 0.9rem; margin:0;">Paloma está te esperando...</p>
+            <div style="font-size: 3rem; color: #4CAF50;">✅</div>
+            <h3 style="color: #4CAF50; margin-bottom: 5px;">📞 Chamada atendida!</h3>
+            <p style="font-size: 0.9rem; margin:0;">💋 Paloma está te esperando...</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -509,8 +508,8 @@ class UiService:
     @staticmethod
     def show_status_effect(container, status_type):
         status_messages = {
-            "viewed": "Visualizado",
-            "typing": "Digitando"
+            "viewed": "👀 Visualizado",
+            "typing": "✍️ Digitando"
         }
         
         message = status_messages[status_type]
@@ -546,7 +545,7 @@ class UiService:
 
     @staticmethod
     def show_audio_recording_effect(container):
-        message = "Gravando um áudio"
+        message = "🎤 Gravando um áudio"
         dots = ""
         start_time = time.time()
         
@@ -615,15 +614,15 @@ class UiService:
                     <h1 class="age-title">Verificação de Idade</h1>
                 </div>
                 <div class="age-content">
-                    <p>Este site contém material explícito destinado exclusivamente a adultos maiores de 18 anos.</p>
-                    <p>Ao acessar este conteúdo, você declara estar em conformidade com todas as leis locais aplicáveis.</p>
+                    <p>⚠️ Este site contém material explícito destinado exclusivamente a adultos maiores de 18 anos.</p>
+                    <p>📛 Ao acessar este conteúdo, você declara estar em conformidade com todas as leis locais aplicáveis.</p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
-            if st.button("Confirmo que sou maior de 18 anos", 
+            if st.button("✅ Confirmo que sou maior de 18 anos", 
                         key="age_checkbox",
                         use_container_width=True,
                         type="primary"):
@@ -689,7 +688,7 @@ class UiService:
                         width: 320px;
                     }
                 }
-                [data-testid="stSidebarNav"] {
+                [data.testid="stSidebarNav"] {
                     margin-top: -50px;
                 }
                 .sidebar-logo-container {
@@ -708,18 +707,18 @@ class UiService:
             st.markdown("""
             <div class="sidebar-header">
                 <img src="{profile_img}" alt="Paloma">
-                <h3 style="color: #ff66b3; margin-top: 10px;">Paloma Premium</h3>
+                <h3 style="color: #ff66b3; margin-top: 10px;">💋 Paloma Premium</h3>
             </div>
             """.format(profile_img=Config.IMG_PROFILE), unsafe_allow_html=True)
             
             st.markdown("---")
-            st.markdown("### Menu Exclusivo")
+            st.markdown("### 🎯 Menu Exclusivo")
             
             menu_options = {
-                "Início": "home",
-                "Galeria Privada": "gallery",
-                "Mensagens": "messages",
-                "Ofertas Especiais": "offers"
+                "🏠 Início": "home",
+                "📸 Galeria Privada": "gallery",
+                "💬 Mensagens": "messages",
+                "🎁 Ofertas Especiais": "offers"
             }
             
             for option, page in menu_options.items():
@@ -731,7 +730,7 @@ class UiService:
                         st.rerun()
             
             st.markdown("---")
-            st.markdown("### Sua Conta")
+            st.markdown("### 👤 Sua Conta")
             
             st.markdown("""
             <div style="
@@ -740,21 +739,21 @@ class UiService:
                 border-radius: 8px;
                 text-align: center;
             ">
-                <p style="margin:0;">Acesse conteúdo exclusivo</p>
+                <p style="margin:0;">🔓 Acesse conteúdo exclusivo</p>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("---")
-            st.markdown("### Upgrade VIP")
+            st.markdown("### ⭐ Upgrade VIP")
             st.markdown("""
             <div class="vip-badge">
-                <p style="margin: 0 0 10px; font-weight: bold;">Acesso completo por apenas</p>
-                <p style="margin: 0; font-size: 1.5em; font-weight: bold;">R$ 29,90/mês</p>
-                <p style="margin: 10px 0 0; font-size: 0.8em;">Cancele quando quiser</p>
+                <p style="margin: 0 0 10px; font-weight: bold;">🎯 Acesso completo por apenas</p>
+                <p style="margin: 0; font-size: 1.5em; font-weight: bold;">💎 R$ 29,90/mês</p>
+                <p style="margin: 10px 0 0; font-size: 0.8em;">🔄 Cancele quando quiser</p>
             </div>
             """, unsafe_allow_html=True)
             
-            if st.button("Tornar-se VIP", use_container_width=True, type="primary"):
+            if st.button("⭐ Tornar-se VIP", use_container_width=True, type="primary"):
                 st.session_state.current_page = "offers"
                 save_persistent_data()
                 st.rerun()
@@ -763,7 +762,7 @@ class UiService:
             st.markdown("""
             <div style="text-align: center; font-size: 0.7em; color: #888;">
                 <p>© 2024 Paloma Premium</p>
-                <p>Conteúdo para maiores de 18 anos</p>
+                <p>🔞 Conteúdo para maiores de 18 anos</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -776,7 +775,7 @@ class UiService:
             border-radius: 10px;
             margin-bottom: 20px;
         ">
-            <p style="margin: 0;">Conteúdo exclusivo disponível</p>
+            <p style="margin: 0;">🎨 Conteúdo exclusivo disponível</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -787,7 +786,7 @@ class UiService:
                 st.image(
                     Config.IMG_GALLERY[idx],
                     use_container_width=True,
-                    caption=f"Preview {idx+1}"
+                    caption=f"📸 Preview {idx+1}"
                 )
                 st.markdown(f"""
                 <div style="
@@ -796,26 +795,26 @@ class UiService:
                     color: #ff66b3;
                     margin-top: -10px;
                 ">
-                    Conteúdo bloqueado
+                    🔒 Conteúdo bloqueado
                 </div>
                 """, unsafe_allow_html=True)
         
         st.markdown("---")
         st.markdown("""
         <div style="text-align: center;">
-            <h4>Desbloqueie acesso completo</h4>
-            <p>Assine o plano VIP para ver todos os conteúdos</p>
+            <h4>🔓 Desbloqueie acesso completo</h4>
+            <p>💎 Assine o plano VIP para ver todos os conteúdos</p>
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("Tornar-se VIP", 
+        if st.button("⭐ Tornar-se VIP", 
                     key="vip_button_gallery", 
                     use_container_width=True,
                     type="primary"):
             st.session_state.current_page = "offers"
             st.rerun()
         
-        if st.button("Voltar ao chat", key="back_from_gallery"):
+        if st.button("↩️ Voltar ao chat", key="back_from_gallery"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
@@ -824,28 +823,28 @@ class UiService:
     def chat_shortcuts():
         cols = st.columns(4)
         with cols[0]:
-            if st.button("Início", key="shortcut_home", 
+            if st.button("🏠 Início", key="shortcut_home", 
                        help="Voltar para a página inicial",
                        use_container_width=True):
                 st.session_state.current_page = "home"
                 save_persistent_data()
                 st.rerun()
         with cols[1]:
-            if st.button("Galeria", key="shortcut_gallery",
+            if st.button("📸 Galeria", key="shortcut_gallery",
                        help="Acessar galeria privada",
                        use_container_width=True):
                 st.session_state.current_page = "gallery"
                 save_persistent_data()
                 st.rerun()
         with cols[2]:
-            if st.button("Ofertas", key="shortcut_offers",
+            if st.button("🎁 Ofertas", key="shortcut_offers",
                        help="Ver ofertas especiais",
                        use_container_width=True):
                 st.session_state.current_page = "offers"
                 save_persistent_data()
                 st.rerun()
         with cols[3]:
-            if st.button("VIP", key="shortcut_vip",
+            if st.button("⭐ VIP", key="shortcut_vip",
                        help="Acessar área VIP",
                        use_container_width=True):
                 st.session_state.current_page = "vip"
@@ -903,7 +902,7 @@ class UiService:
         
         st.markdown(f"""
         <div class="chat-header">
-            <h2 style="margin:0; font-size:1.5em; display:inline-block;">Chat Privado com Paloma</h2>
+            <h2 style="margin:0; font-size:1.5em; display:inline-block;">💬 Chat Privado com Paloma</h2>
         </div>
         """, unsafe_allow_html=True)
         
@@ -916,7 +915,7 @@ class UiService:
             text-align: center;
         ">
             <p style="margin:0; font-size:0.9em;">
-                Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong>
+                📨 Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong>
             </p>
             <progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:6px;"></progress>
         </div>
@@ -933,7 +932,7 @@ class UiService:
             font-size: 0.8em;
             color: #888;
         ">
-            <p>Conversa privada • Suas mensagens são confidenciais</p>
+            <p>🔒 Conversa privada • Suas mensagens são confidenciais</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -967,8 +966,8 @@ class NewPages:
 
         st.markdown("""
         <div class="hero-banner">
-            <h1 style="color: #ff66b3;">Paloma Premium</h1>
-            <p>Conteúdo exclusivo que você não encontra em nenhum outro lugar...</p>
+            <h1 style="color: #ff66b3;">💋 Paloma Premium</h1>
+            <p>🎯 Conteúdo exclusivo que você não encontra em nenhum outro lugar...</p>
             <div style="margin-top: 20px;">
                 <a href="#vip" style="
                     background: #ff66b3;
@@ -978,7 +977,7 @@ class NewPages:
                     text-decoration: none;
                     font-weight: bold;
                     display: inline-block;
-                ">Quero Acessar Tudo</a>
+                ">🚀 Quero Acessar Tudo</a>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -987,19 +986,19 @@ class NewPages:
         
         for col, img in zip(cols, Config.IMG_HOME_PREVIEWS):
             with col:
-                st.image(img, use_container_width=True, caption="Conteúdo bloqueado", output_format="auto")
-                st.markdown("""<div style="text-align:center; color: #ff66b3; margin-top: -15px;">VIP Only</div>""", unsafe_allow_html=True)
+                st.image(img, use_container_width=True, caption="🔒 Conteúdo bloqueado", output_format="auto")
+                st.markdown("""<div style="text-align:center; color: #ff66b3; margin-top: -15px;">⭐ VIP Only</div>""", unsafe_allow_html=True)
 
         st.markdown("---")
         
-        if st.button("Iniciar Conversa Privada", 
+        if st.button("💬 Iniciar Conversa Privada", 
                     use_container_width=True,
                     type="primary"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
 
-        if st.button("Voltar ao chat", key="back_from_home"):
+        if st.button("↩️ Voltar ao chat", key="back_from_home"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
@@ -1059,7 +1058,7 @@ class NewPages:
                 padding-left: 25px;
             }
             .package-benefits li:before {
-                content: "✓";
+                content: "✅";
                 color: #ff66b3;
                 position: absolute;
                 left: 0;
@@ -1105,8 +1104,8 @@ class NewPages:
 
         st.markdown("""
         <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: #ff66b3; border-bottom: 2px solid #ff66b3; display: inline-block; padding-bottom: 5px;">PACOTES EXCLUSIVOS</h2>
-            <p style="color: #aaa; margin-top: 10px;">Escolha o que melhor combina com seus desejos...</p>
+            <h2 style="color: #ff66b3; border-bottom: 2px solid #ff66b3; display: inline-block; padding-bottom: 5px;">🎁 PACOTES EXCLUSIVOS</h2>
+            <p style="color: #aaa; margin-top: 10px;">✨ Escolha o que melhor combina com seus desejos...</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1115,16 +1114,16 @@ class NewPages:
         st.markdown("""
         <div class="package-box package-start">
             <div class="package-header">
-                <h3 style="color: #ff66b3;">SANTINHA</h3>
-                <div class="package-price" style="color: #ff66b3;">R$ 19,90</div>
-                <small>para iniciantes</small>
+                <h3 style="color: #ff66b3;">👼 SANTINHA</h3>
+                <div class="package-price" style="color: #ff66b3;">💎 R$ 19,90</div>
+                <small>🎯 para iniciantes</small>
             </div>
             <ul class="package-benefits">
-                <li>10 fotos Inéditas</li>
-                <li>3 vídeo Intimos</li>
-                <li>Fotos Exclusivas</li>
-                <li>Videos Intimos </li>
-                <li>Fotos Buceta</li>
+                <li>📸 10 fotos Inéditas</li>
+                <li>🎥 3 vídeo Intimos</li>
+                <li>🌟 Fotos Exclusivas</li>
+                <li>🔥 Videos Intimos </li>
+                <li>🌸 Fotos Buceta</li>
             </ul>
             <div style="position: absolute; bottom: 20px; width: calc(100% - 40px);">
                 <a href="{checkout_start}" target="_blank" rel="noopener noreferrer" style="
@@ -1139,8 +1138,8 @@ class NewPages:
                     transition: all 0.3s;
                 " onmouseover="this.style.transform='scale(1.05)'" 
                 onmouseout="this.style.transform='scale(1)'"
-                onclick="this.innerHTML='REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
-                    QUERO ESTE PACOTE ➔
+                onclick="this.innerHTML='🔄 REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
+                    🚀 QUERO ESTE PACOTE ➔
                 </a>
             </div>
         </div>
@@ -1148,20 +1147,20 @@ class NewPages:
 
         st.markdown("""
         <div class="package-box package-premium">
-            <div class="package-badge">POPULAR</div>
+            <div class="package-badge">🔥 POPULAR</div>
             <div class="package-header">
-                <h3 style="color: #9400d3;">DOMÍNIO</h3>
-                <div class="package-price" style="color: #9400d3;">R$ 29,90</div>
-                <small>experiência completa</small>
+                <h3 style="color: #9400d3;">👑 DOMÍNIO</h3>
+                <div class="package-price" style="color: #9400d3;">💎 R$ 29,90</div>
+                <small>🎯 experiência completa</small>
             </div>
             <ul class="package-benefits">
-                <li>20 fotos exclusivas</li>
-                <li>5 vídeos premium</li>
-                <li>Fotos Peito</li>
-                <li>Fotos Bunda</li>
-                <li>Fotos Buceta</li>
-                <li>Fotos Exclusivas e Videos Exclusivos</li>
-                <li>Videos Masturbando</li>
+                <li>📸 20 fotos exclusivas</li>
+                <li>🎥 5 vídeos premium</li>
+                <li>🍑 Fotos Peito</li>
+                <li>🔥 Fotos Bunda</li>
+                <li>🌸 Fotos Buceta</li>
+                <li>🌟 Fotos Exclusivas e Videos Exclusivos</li>
+                <li>💦 Videos Masturbando</li>
             </ul>
             <div style="position: absolute; bottom: 20px; width: calc(100% - 40px);">
                 <a href="{checkout_premium}" target="_blank" rel="noopener noreferrer" style="
@@ -1176,8 +1175,8 @@ class NewPages:
                     transition: all 0.3s;
                 " onmouseover="this.style.transform='scale(1.05)'" 
                 onmouseout="this.style.transform='scale(1)'"
-                onclick="this.innerHTML='REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
-                    QUERO ESTE PACOTE ➔
+                onclick="this.innerHTML='🔄 REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
+                    🚀 QUERO ESTE PACOTE ➔
                 </a>
             </div>
         </div>
@@ -1186,20 +1185,20 @@ class NewPages:
         st.markdown("""
         <div class="package-box package-extreme">
             <div class="package-header">
-                <h3 style="color: #ff0066;">EXTREME</h3>
-                <div class="package-price" style="color: #ff0066;">R$ 49,90</div>
-                <small>para verdadeiros fãs</small>
+                <h3 style="color: #ff0066;">😈 EXTREME</h3>
+                <div class="package-price" style="color: #ff0066;">💎 R$ 49,90</div>
+                <small>🎯 para verdadeiros fãs</small>
             </div>
             <ul class="package-benefits">
-                <li>30 fotos ultra-exclusivas</li>
-                <li>10 Videos Exclusivos</li>
-                <li>Fotos Peito</li>
-                <li>Fotos Bunda</li>
-                <li>Fotos Buceta</li>
-                <li>Fotos Exclusivas</li>
-                <li>Videos Masturbando</li>
-                <li>Videos Transando</li>
-                <li>Acesso a conteúdos futuros</li>
+                <li>📸 30 fotos ultra-exclusivas</li>
+                <li>🎥 10 Videos Exclusivos</li>
+                <li>🍑 Fotos Peito</li>
+                <li>🔥 Fotos Bunda</li>
+                <li>🌸 Fotos Buceta</li>
+                <li>🌟 Fotos Exclusivas</li>
+                <li>💦 Videos Masturbando</li>
+                <li>🔥 Videos Transando</li>
+                <li>🎁 Acesso a conteúdos futuros</li>
             </ul>
             <div style="position: absolute; bottom: 20px; width: calc(100% - 40px);">
                 <a href="{checkout_extreme}" target="_blank" rel="noopener noreferrer" style="
@@ -1214,8 +1213,8 @@ class NewPages:
                     transition: all 0.3s;
                 " onmouseover="this.style.transform='scale(1.05)'" 
                 onmouseout="this.style.transform='scale(1)'"
-                onclick="this.innerHTML='REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
-                    QUERO ESTE PACOTE ➔
+                onclick="this.innerHTML='🔄 REDIRECIONANDO ⌛'; this.style.opacity='0.7'">
+                    🚀 QUERO ESTE PACOTE ➔
                 </a>
             </div>
         </div>
@@ -1225,9 +1224,9 @@ class NewPages:
 
         st.markdown("""
         <div class="countdown-container">
-            <h3 style="margin:0;">OFERTA RELÂMPAGO</h3>
+            <h3 style="margin:0;">⏰ OFERTA RELÂMPAGO</h3>
             <div id="countdown" style="font-size: 1.5em; font-weight: bold;">23:59:59</div>
-            <p style="margin:5px 0 0;">Termina em breve!</p>
+            <p style="margin:5px 0 0;">⏳ Termina em breve!</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1262,24 +1261,24 @@ class NewPages:
                 "name": "1 Mês",
                 "price": "R$ 29,90",
                 "original": "R$ 49,90",
-                "benefits": ["Acesso total", "Conteúdo novo diário", "Chat privado"],
-                "tag": "COMUM",
+                "benefits": ["🔓 Acesso total", "🆕 Conteúdo novo diário", "💬 Chat privado"],
+                "tag": "📦 COMUM",
                 "link": Config.CHECKOUT_VIP_1MES + "?plan=1mes"
             },
             {
                 "name": "3 Meses",
                 "price": "R$ 69,90",
                 "original": "R$ 149,70",
-                "benefits": ["25% de desconto", "Bônus: 1 vídeo exclusivo", "Prioridade no chat"],
-                "tag": "MAIS POPULAR",
+                "benefits": ["🎯 25% de desconto", "🎁 Bônus: 1 vídeo exclusivo", "⚡ Prioridade no chat"],
+                "tag": "🔥 MAIS POPULAR",
                 "link": Config.CHECKOUT_VIP_3MESES + "?plan=3meses"
             },
             {
                 "name": "1 Ano",
                 "price": "R$ 199,90",
                 "original": "R$ 598,80",
-                "benefits": ["66% de desconto", "Presente surpresa mensal", "Acesso a conteúdos raros"],
-                "tag": "MELHOR CUSTO-BENEFÍCIO",
+                "benefits": ["💰 66% de desconto", "🎁 Presente surpresa mensal", "🔮 Acesso a conteúdos raros"],
+                "tag": "💎 MELHOR CUSTO-BENEFÍCIO",
                 "link": Config.CHECKOUT_VIP_1ANO + "?plan=1ano"
             }
         ]
@@ -1309,13 +1308,13 @@ class NewPages:
                             display: inline-block;
                             font-weight: bold;
                         ">
-                            Assinar {plan['name']}
+                            📝 Assinar {plan['name']}
                         </a>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-        if st.button("Voltar ao chat", key="back_from_offers"):
+        if st.button("↩️ Voltar ao chat", key="back_from_offers"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
@@ -1351,7 +1350,7 @@ class ChatService:
             'audio_sent': False,
             'current_page': 'home',
             'show_vip_offer': False,
-            'last_cta_time': 0  # Novo campo adicionado
+            'last_cta_time': 0
         }
         
         for key, default in defaults.items():
@@ -1366,7 +1365,7 @@ class ChatService:
             role = "Cliente" if msg["role"] == "user" else "Paloma"
             content = msg["content"]
             if content == "[ÁUDIO]":
-                content = "[Enviou um áudio sensual]"
+                content = "[🎤 Enviou um áudio sensual]"
             elif content.startswith('{"text"'):
                 try:
                     content = json.loads(content).get("text", content)
@@ -1414,11 +1413,10 @@ class ChatService:
                                 </div>
                                 """, unsafe_allow_html=True)
                                 
-                                # Mostrar botão apenas na última mensagem
                                 if content_data.get("cta", {}).get("show") and idx == len(st.session_state.messages[-12:]) - 1:
                                     if st.button(
-                                        content_data.get("cta", {}).get("label", "Ver Ofertas"),
-                                        key=f"cta_button_{hash(msg['content'])}",  # Chave única baseada no conteúdo
+                                        content_data.get("cta", {}).get("label", "🎁 Ver Ofertas"),
+                                        key=f"cta_button_{hash(msg['content'])}",
                                         use_container_width=True
                                     ):
                                         st.session_state.current_page = content_data.get("cta", {}).get("target", "offers")
@@ -1479,7 +1477,7 @@ class ChatService:
             save_persistent_data()
             st.rerun()
         
-        user_input = st.chat_input("Escreva sua mensagem aqui", key="chat_input")
+        user_input = st.chat_input("✍️ Escreva sua mensagem aqui", key="chat_input")
         
         if user_input:
             cleaned_input = ChatService.validate_input(user_input)
@@ -1487,14 +1485,14 @@ class ChatService:
             if st.session_state.request_count >= Config.MAX_REQUESTS_PER_SESSION:
                 st.session_state.messages.append({
                     "role": "assistant",
-                    "content": "Vou ficar ocupada agora, me manda mensagem depois?"
+                    "content": "⏰ Vou ficar ocupada agora, me manda mensagem depois?"
                 })
                 DatabaseService.save_message(
                     conn,
                     get_user_id(),
                     st.session_state.session_id,
                     "assistant",
-                    "Estou ficando cansada, amor... Que tal continuarmos mais tarde?"
+                    "😴 Estou ficando cansada, amor... Que tal continuarmos mais tarde?"
                 )
                 save_persistent_data()
                 st.rerun()
@@ -1548,7 +1546,7 @@ class ChatService:
                 
                 if resposta.get("cta", {}).get("show"):
                     if st.button(
-                        resposta["cta"].get("label", "Ver Ofertas"),
+                        resposta["cta"].get("label", "🎁 Ver Ofertas"),
                         key=f"chat_button_{time.time()}",
                         use_container_width=True
                     ):
@@ -1642,12 +1640,12 @@ def main():
             st.markdown("""
             <div style="text-align: center; margin: 50px 0;">
                 <img src="{profile_img}" width="120" style="border-radius: 50%; border: 3px solid #ff66b3;">
-                <h2 style="color: #ff66b3; margin-top: 15px;">Paloma</h2>
-                <p style="font-size: 1.1em;">Estou pronta para você, amor...</p>
+                <h2 style="color: #ff66b3; margin-top: 15px;">💋 Paloma</h2>
+                <p style="font-size: 1.1em;">😘 Estou pronta para você, amor...</p>
             </div>
             """.format(profile_img=Config.IMG_PROFILE), unsafe_allow_html=True)
             
-            if st.button("Iniciar Conversa", type="primary", use_container_width=True):
+            if st.button("💬 Iniciar Conversa", type="primary", use_container_width=True):
                 st.session_state.update({
                     'chat_started': True,
                     'current_page': 'chat',
@@ -1668,8 +1666,8 @@ def main():
         save_persistent_data()
         st.rerun()
     elif st.session_state.get("show_vip_offer", False):
-        st.warning("Página VIP em desenvolvimento")
-        if st.button("Voltar ao chat"):
+        st.warning("🚧 Página VIP em desenvolvimento")
+        if st.button("↩️ Voltar ao chat"):
             st.session_state.show_vip_offer = False
             save_persistent_data()
             st.rerun()
@@ -1680,4 +1678,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
