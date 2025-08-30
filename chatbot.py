@@ -273,7 +273,7 @@ class CTAEngine:
         
         direct_asks = [
             "mostra", "quero ver", "me manda", "como assinar",
-            "como comprar", "como ter acesso", "onde vejo mais"
+            "como comprar", "como ter acesso", "onde vejo more"
         ]
         
         hot_count = sum(1 for word in hot_words if word in context)
@@ -457,7 +457,7 @@ class UiService:
         call_container = st.empty()
         call_container.markdown(f"""
         <div style="
-            background: linear-gradient(135deg, #1e0033, #3c0066);
+            background: linear-gradient(135deg, #8B0000, #8B0000);
             border-radius: 20px;
             padding: 30px;
             max-width: 300px;
@@ -487,7 +487,7 @@ class UiService:
         time.sleep(LIGANDO_DELAY)
         call_container.markdown(f"""
         <div style="
-            background: linear-gradient(135deg, #1e0033, #3c0066);
+            background: linear-gradient(135deg, #8B0000, #8B0000);
             border-radius: 20px;
             padding: 30px;
             max-width: 300px;
@@ -582,7 +582,7 @@ class UiService:
                 max-width: 600px;
                 margin: 2rem auto;
                 padding: 2rem;
-                background: linear-gradient(145deg, #1e0033, #3c0066);
+                background: linear-gradient(145deg, #8B0000, #8B0000);
                 border-radius: 15px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
                 border: 1px solid rgba(255, 102, 179, 0.2);
@@ -637,7 +637,7 @@ class UiService:
             st.markdown("""
             <style>
                 [data-testid="stSidebar"] {
-                    background: linear-gradient(180deg, #1e0033 0%, #3c0066 100%) !important;
+                    background: linear-gradient(180deg, #8B0000 0%, #8B0000 100%) !important;
                     border-right: 1px solid #ff66b3 !important;
                 }
                 .sidebar-logo-container {
@@ -946,7 +946,7 @@ class NewPages:
         st.markdown("""
         <style>
             .hero-banner {
-                background: linear-gradient(135deg, #1e0033, #3c0066);
+                background: linear-gradient(135deg, #8B0000, #8B0000);
                 padding: 80px 20px;
                 text-align: center;
                 border-radius: 15px;
@@ -1016,7 +1016,7 @@ class NewPages:
             }
             .package-box {
                 flex: 1;
-                background: rgba(30, 0, 51, 0.3);
+                background: rgba(139, 0, 0, 0.3);
                 border-radius: 15px;
                 padding: 20px;
                 border: 1px solid;
@@ -1092,7 +1092,7 @@ class NewPages:
                 border-radius: 15px;
                 padding: 20px;
                 margin-bottom: 20px;
-                background: rgba(30, 0, 51, 0.3);
+                background: rgba(139, 0, 0, 0.3);
             }
             .offer-highlight {
                 background: linear-gradient(45deg, #ff0066, #ff66b3);
@@ -1115,8 +1115,8 @@ class NewPages:
         st.markdown("""
         <div class="package-box package-start">
             <div class="package-header">
-                <h3 style="color: #ff66b3;">START</h3>
-                <div class="package-price" style="color: #ff66b3;">R$ 49,90</div>
+                <h3 style="color: #ff66b3;">SANTINHA</h3>
+                <div class="package-price" style="color: #ff66b3;">R$ 19,90</div>
                 <small>para iniciantes</small>
             </div>
             <ul class="package-benefits">
@@ -1150,8 +1150,8 @@ class NewPages:
         <div class="package-box package-premium">
             <div class="package-badge">POPULAR</div>
             <div class="package-header">
-                <h3 style="color: #9400d3;">PREMIUM</h3>
-                <div class="package-price" style="color: #9400d3;">R$ 99,90</div>
+                <h3 style="color: #9400d3;">DOMÍNIO</h3>
+                <div class="package-price" style="color: #9400d3;">R$ 29,90</div>
                 <small>experiência completa</small>
             </div>
             <ul class="package-benefits">
@@ -1187,7 +1187,7 @@ class NewPages:
         <div class="package-box package-extreme">
             <div class="package-header">
                 <h3 style="color: #ff0066;">EXTREME</h3>
-                <div class="package-price" style="color: #ff0066;">R$ 199,90</div>
+                <div class="package-price" style="color: #ff0066;">R$ 49,90</div>
                 <small>para verdadeiros fãs</small>
             </div>
             <ul class="package-benefits">
@@ -1583,7 +1583,7 @@ def main():
     st.markdown("""
     <style>
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #1e0033 0%, #3c0066 100%) !important;
+            background: linear-gradient(180deg, #8B0000 0%, #8B0000 100%) !important;
             border-right: 1px solid #ff66b3 !important;
         }
         .stButton button {
@@ -1680,6 +1680,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
